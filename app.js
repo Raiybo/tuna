@@ -282,9 +282,12 @@ async function load() {
         .addTo(hotspotLayer).bindPopup(
           `<b>Bait hotspot #${i + 1}</b> &middot; likely birds / frenzy<br>` +
           `${h.dist_nm} nm ${h.heading} &middot; score ${h.score}<br>` +
-          `<small>${h.why}</small><br><b>${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</b><br>` +
+          `<small>${h.why}</small><br>` +
+          `<small style="color:#7fc8e8">ðŸ“¡ measured by satellite â€” ${hs.sst_source || "SST"}` +
+          `${hs.chl_source ? "; " + hs.chl_source : ""}</small><br>` +
+          `<b>${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</b><br>` +
           `<a href="${gmap}" target="_blank" rel="noopener">Maps</a> &middot; ` +
-          `<a href="${eo}" target="_blank" rel="noopener">Sentinel-2 image</a>`);
+          `<a href="${eo}" target="_blank" rel="noopener">ðŸ“· real satellite photo of this spot</a>`);
     });
     if (hs.sst_source) statusEl.title = `hotspots: ${hs.sst_source}; ${hs.chl_source}`;
   } catch (e) { /* no hotspots file yet */ }
