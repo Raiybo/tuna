@@ -1,0 +1,30 @@
+name: Refresh hotspots
+
+# Self-updating: recomputes the bait-likelihood hotspots from free satellite data
+# every morning and commits them, so the live map stays current with no PC and no
+# manual step. Uses the built-in GITHUB_TOKEN - no external credentials.
+on:
+  schedule:
+    - cron: "30 3 * * *"   # 03:30 UTC ~ 06:30 Asia/Beirut (first light)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Recompute hotspots
+        run: python scripts/hotspots.py
+      - name: Commit if changed
+        run: |
+          git config user.name "tuna-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/hotspots.json
+          git commit -m "daily: refresh bait hotspots" || echo "no change to commit"
+          git push
