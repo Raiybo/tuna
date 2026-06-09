@@ -110,7 +110,7 @@ async function fetchWeather(lat, lon) {
 }
 
 // ---- map ----
-const map = L.map("map");
+const map = L.map("map", { maxZoom: 20 });
 const darkBase = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
   { attribution: "&copy; OpenStreetMap &copy; CARTO", maxZoom: 19 }).addTo(map);
 
@@ -126,14 +126,27 @@ function gibs(layer) {
       maxNativeZoom: 9, maxZoom: 19, bounds: [[-85, -180], [85, 180]] });
 }
 const viirsBase = gibs("VIIRS_SNPP_CorrectedReflectance_TrueColor");
-const modisBase = gibs("MODIS_Terra_CorrectedReflectance_TrueColor");
+
+// High-resolution satellite (sharp on zoom). These are MOSAICS - not today's
+// water - but stay crisp: best for coastline, reefs, structure, the marina.
+const esriHD = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  { attribution: "Imagery &copy; Esri, Maxar, Earthstar Geographics", maxNativeZoom: 19, maxZoom: 20 });
+const s2cloud = L.tileLayer(
+  "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg",
+  { attribution: "Sentinel-2 cloudless 2021 &copy; EOX", maxNativeZoom: 16, maxZoom: 20 });
 
 const spotLayer = L.layerGroup().addTo(map);
 const sightLayer = L.layerGroup().addTo(map);
 const hotspotLayer = L.layerGroup().addTo(map);
 
 L.control.layers(
-  { "Dark map": darkBase, "Satellite Â· VIIRS (NRT)": viirsBase, "Satellite Â· MODIS (NRT)": modisBase },
+  {
+    "Dark map": darkBase,
+    "Satellite HD (sharp ~1m)": esriHD,
+    "Satellite 10m (cloudless)": s2cloud,
+    "Satellite TODAY (coarse)": viirsBase,
+  },
   { "Bait hotspots ðŸŽ¯": hotspotLayer, "Fishing spots": spotLayer, "Frenzies / sightings": sightLayer },
   { collapsed: true }
 ).addTo(map);
