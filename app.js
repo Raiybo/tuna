@@ -130,10 +130,11 @@ const modisBase = gibs("MODIS_Terra_CorrectedReflectance_TrueColor");
 
 const spotLayer = L.layerGroup().addTo(map);
 const sightLayer = L.layerGroup().addTo(map);
+const hotspotLayer = L.layerGroup().addTo(map);
 
 L.control.layers(
   { "Dark map": darkBase, "Satellite Â· VIIRS (NRT)": viirsBase, "Satellite Â· MODIS (NRT)": modisBase },
-  { "Fishing spots": spotLayer, "Frenzies / sightings": sightLayer },
+  { "Bait hotspots ðŸŽ¯": hotspotLayer, "Fishing spots": spotLayer, "Frenzies / sightings": sightLayer },
   { collapsed: true }
 ).addTo(map);
 
@@ -163,7 +164,7 @@ const trendWord = (t) => t == null ? "n/a" : t > 0.5 ? `rising (+${t}/3h)` : t <
 
 async function load() {
   statusEl.textContent = "Loading live sea conditionsâ€¦";
-  spotLayer.clearLayers(); sightLayer.clearLayers(); rankingEl.innerHTML = "";
+  spotLayer.clearLayers(); sightLayer.clearLayers(); hotspotLayer.clearLayers(); rankingEl.innerHTML = "";
 
   let home, db, sightRaw;
   try {
@@ -256,6 +257,24 @@ async function load() {
         `<a href="${gmap}" target="_blank" rel="noopener">Maps</a> Â· ` +
         `<a href="${eo}" target="_blank" rel="noopener">Sentinel-2 image</a>`);
   });
+
+  // bait-likelihood hotspots = where birds / frenzies are most likely (data/hotspots.json)
+  try {
+    const hs = await fetch("data/hotspots.json").then((r) => r.json());
+    (hs.hotspots || []).forEach((h, i) => {
+      const eo = `https://apps.sentinel-hub.com/eo-browser/?zoom=14&lat=${h.lat}&lng=${h.lon}`;
+      const gmap = `https://www.google.com/maps?q=${h.lat},${h.lon}`;
+      L.marker([h.lat, h.lon], { icon: L.divIcon({ className: "hot-icon",
+        html: '<span style="font-size:22px;filter:drop-shadow(0 0 3px #ff8c00)">&#127919;</span>', iconSize: [24, 24] }) })
+        .addTo(hotspotLayer).bindPopup(
+          `<b>Bait hotspot #${i + 1}</b> &middot; likely birds / frenzy<br>` +
+          `${h.dist_nm} nm ${h.heading} &middot; score ${h.score}<br>` +
+          `<small>${h.why}</small><br><b>${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</b><br>` +
+          `<a href="${gmap}" target="_blank" rel="noopener">Maps</a> &middot; ` +
+          `<a href="${eo}" target="_blank" rel="noopener">Sentinel-2 image</a>`);
+    });
+    if (hs.sst_source) statusEl.title = `hotspots: ${hs.sst_source}; ${hs.chl_source}`;
+  } catch (e) { /* no hotspots file yet */ }
 
   statusEl.textContent = `As of ${new Date(nowMs).toISOString().slice(0, 16).replace("T", " ")}Z Â· ` +
     `${rows.filter((r) => r.inRange).length} spots in range`;
