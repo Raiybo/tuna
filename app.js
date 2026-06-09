@@ -148,7 +148,7 @@ L.control.layers(
     "Satellite TODAY (coarse)": viirsBase,
   },
   { "Bait hotspots ðŸŽ¯": hotspotLayer, "Fishing spots": spotLayer, "Frenzies / sightings": sightLayer },
-  { collapsed: true }
+  { collapsed: false }
 ).addTo(map);
 
 // Tap anywhere (or on a satellite feature) to get its exact GPS + a 10 m Sentinel-2 image.
