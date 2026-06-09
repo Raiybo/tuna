@@ -1,0 +1,130 @@
+{
+  "region": "Lebanon",
+  "target": "Atlantic bluefin tuna (Thunnus thynnus)",
+  "method": "casting / surface lures (poppers, stickbaits) and light jigging",
+  "datum": "WGS84",
+  "note": "Starter offshore search zones over deeper water, shelf edges and current lines along the Lebanese coast (north to south). The shelf here is narrow, so deep blue water sits close in. These are search areas, not guaranteed marks - refine the lat/lon and add your own waypoints from real catch logs.",
+  "spots": [
+    {
+      "id": "arida-north",
+      "name": "Arida North Banks",
+      "area": "Akkar / Arida",
+      "lat": 34.63,
+      "lon": 35.85,
+      "depth_zone": "outer shelf",
+      "structure": "Northern border banks where the Akkar shelf falls away; northbound current pushes bait along the edge.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Run the colour change on the outer edge at first light; watch for working birds over the banks."
+    },
+    {
+      "id": "tripoli-palm",
+      "name": "Palm Islands Edge",
+      "area": "Tripoli / El Mina",
+      "lat": 34.50,
+      "lon": 35.65,
+      "depth_zone": "shelf edge",
+      "structure": "Drop-off west of the Palm Islands reserve; reef-to-blue transition holds baitfish.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Cast the seaward edge of the bait schools; current lines off the islands concentrate sardine and anchovy."
+    },
+    {
+      "id": "batroun-dropoff",
+      "name": "Batroun Drop",
+      "area": "Batroun",
+      "lat": 34.25,
+      "lon": 35.55,
+      "depth_zone": "shelf edge",
+      "structure": "Steep drop a few km off the old harbour; rocky structure feeds into deep water.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Surface busts common on calm dawns; keep poppers ready when bait sprays."
+    },
+    {
+      "id": "byblos-canyon",
+      "name": "Byblos Outer",
+      "area": "Jbeil / Byblos",
+      "lat": 34.12,
+      "lon": 35.55,
+      "depth_zone": "shelf edge / canyon head",
+      "structure": "Outer grounds off Jbeil where the shelf narrows toward deep water.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Troll-and-cast; mark bait then drift the edge with stickbaits."
+    },
+    {
+      "id": "jounieh-tabarja",
+      "name": "Tabarja Deep",
+      "area": "Jounieh / Tabarja",
+      "lat": 34.00,
+      "lon": 35.52,
+      "depth_zone": "shelf edge",
+      "structure": "Deep water close in off Jounieh bay; current funnels around the headlands.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Early morning before the sea breeze fills in; work the convergence lines."
+    },
+    {
+      "id": "beirut-canyon",
+      "name": "Beirut Canyon Edge",
+      "area": "Beirut / Raouche",
+      "lat": 33.88,
+      "lon": 35.38,
+      "depth_zone": "submarine canyon head",
+      "structure": "Head of the Beirut submarine canyon - deep water swings close to the Raouche shelf; a prime upwelling/bait magnet.",
+      "best_months": [5, 6, 7, 8, 9, 10, 11],
+      "notes": "Top zone on a thermal break. Cast the warm/cold seam; look for diving birds off Raouche."
+    },
+    {
+      "id": "khalde-damour",
+      "name": "Damour Banks",
+      "area": "Khalde / Damour",
+      "lat": 33.70,
+      "lon": 35.35,
+      "depth_zone": "shelf edge",
+      "structure": "Banks off the Damour river mouth; nutrient outflow draws bait after rain.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Fish the outflow plume edge; better on a light onshore drift."
+    },
+    {
+      "id": "saida-outer",
+      "name": "Saida Outer",
+      "area": "Saida / Sidon",
+      "lat": 33.54,
+      "lon": 35.27,
+      "depth_zone": "shelf edge",
+      "structure": "Outer grounds west of Sidon; gradual shelf with scattered hard bottom.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Cover water and cast to surface activity; watch the morning glass-off."
+    },
+    {
+      "id": "zahrani-sarafand",
+      "name": "Zahrani Edge",
+      "area": "Sarafand / Zahrani",
+      "lat": 33.45,
+      "lon": 35.20,
+      "depth_zone": "shelf edge",
+      "structure": "Edge off the Zahrani outflow; current seams stack bait.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Look for slicks and bird play along the seam; jig under bait if they sound."
+    },
+    {
+      "id": "tyre-banks",
+      "name": "Tyre Banks",
+      "area": "Tyre / Sour",
+      "lat": 33.25,
+      "lon": 35.10,
+      "depth_zone": "shelf edge",
+      "structure": "Offshore banks west of Tyre and the Rmeileh grounds; productive deep edge.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Wide grounds - cover ground until you find bait, then work the edge hard."
+    },
+    {
+      "id": "naqoura-south",
+      "name": "Naqoura South Drop",
+      "area": "Naqoura",
+      "lat": 33.11,
+      "lon": 35.05,
+      "depth_zone": "shelf edge",
+      "structure": "Southern border drop-off; deep water close to shore funnels bait north along the coast.",
+      "best_months": [5, 6, 7, 8, 9, 10],
+      "notes": "Work current lines at first light; watch for diving birds and bait sprays."
+    }
+  ]
+}

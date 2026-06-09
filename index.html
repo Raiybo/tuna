@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tuna - Bluefin Day Sheet, Lebanon</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🐟 Tuna <span>· bluefin day sheet · from your marina</span></h1>
+    <div id="status">Loading live sea conditions…</div>
+  </header>
+
+  <div id="app">
+    <aside id="panel">
+      <div id="verdict" class="verdict warn"><span class="v-word">…</span><span class="v-reason"></span></div>
+
+      <h2>Ocean today</h2>
+      <div id="ocean" class="ocean"></div>
+
+      <div class="controls">
+        <button id="refresh">↻ Refresh</button>
+        <label class="chk"><input type="checkbox" id="toggle-sight" checked /> Sightings 🐟</label>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot prime"></i>Prime</span>
+        <span><i class="dot good"></i>Good</span>
+        <span><i class="dot fair"></i>Fair</span>
+        <span><i class="dot poor"></i>Poor</span>
+        <span><i class="dot ring"></i>out of range</span>
+      </div>
+
+      <p class="note scout">
+        <b>🛰️ Scout:</b> switch the map (top-right) to a <b>Satellite</b> layer for the latest free
+        NASA imagery, then <b>tap any spot to get its GPS</b> + a 10&nbsp;m Sentinel-2 image.
+        💥 markers are logged <b>frenzies / bird activity</b> (real sightings, with coordinates).
+        Satellites can’t catch a live bust — too small &amp; brief — so use them to spot blooms &amp;
+        colour edges, then confirm with <b>birds on the water</b>.
+      </p>
+
+      <h2>Where to go</h2>
+      <ol id="ranking"></ol>
+
+      <p class="note">
+        Live sea-surface temp, swell &amp; currents from
+        <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo Marine</a>,
+        wind &amp; pressure from Open-Meteo Weather; moon/solunar computed. Distances &amp; the
+        dashed ring are measured from your home port (<code>data/home.json</code>).
+        Search zones, not guaranteed marks — bluefin are regulated; check seasons, quotas &amp; permits.
+      </p>
+    </aside>
+    <main id="map"></main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="app.js"></script>
+</body>
+</html>
