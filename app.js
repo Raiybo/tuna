@@ -89,24 +89,32 @@ function solunar(nowMs, lon, offsetSec) {
 }
 
 // ---- live fetch ----
-async function fetchMarine(lat, lon) {
+// ONE batched request for ALL spots (Open-Meteo multi-location) instead of one per
+// spot. Cuts ~22 phone requests to 2 - the map loads in a second, not ten.
+async function fetchMarineAll(spots) {
+  const lat = spots.map((s) => s.lat).join(","), lon = spots.map((s) => s.lon).join(",");
   const u = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}` +
     `&current=sea_surface_temperature,wave_height,ocean_current_velocity,ocean_current_direction&timezone=auto`;
-  const d = await (await fetch(u)).json();
-  return { sst: d.current?.sea_surface_temperature ?? null, wave: d.current?.wave_height ?? null,
-    current: d.current?.ocean_current_velocity ?? null, offset: d.utc_offset_seconds || 0 };
+  let d = await (await fetch(u)).json();
+  if (!Array.isArray(d)) d = [d];
+  return d.map((x) => ({ sst: x.current?.sea_surface_temperature ?? null, wave: x.current?.wave_height ?? null,
+    current: x.current?.ocean_current_velocity ?? null, offset: x.utc_offset_seconds || 0 }));
 }
-async function fetchWeather(lat, lon) {
+async function fetchWeatherAll(spots) {
+  const lat = spots.map((s) => s.lat).join(","), lon = spots.map((s) => s.lon).join(",");
   const u = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
     `&current=wind_speed_10m,wind_gusts_10m,wind_direction_10m,surface_pressure,cloud_cover` +
     `&hourly=surface_pressure&past_days=1&forecast_days=1&timezone=auto`;
-  const d = await (await fetch(u)).json();
-  const c = d.current || {}, times = d.hourly?.time || [], pres = d.hourly?.surface_pressure || [];
-  let trend = null;
-  const key = (c.time || "").slice(0, 13) + ":00", i = times.indexOf(key);
-  if (i >= 3 && pres[i] != null && pres[i - 3] != null) trend = +(pres[i] - pres[i - 3]).toFixed(2);
-  return { wind: c.wind_speed_10m ?? null, gust: c.wind_gusts_10m ?? null, windDir: c.wind_direction_10m ?? null,
-    pressure: c.surface_pressure ?? null, trend, cloud: c.cloud_cover ?? null };
+  let d = await (await fetch(u)).json();
+  if (!Array.isArray(d)) d = [d];
+  return d.map((x) => {
+    const c = x.current || {}, times = x.hourly?.time || [], pres = x.hourly?.surface_pressure || [];
+    let trend = null;
+    const key = (c.time || "").slice(0, 13) + ":00", i = times.indexOf(key);
+    if (i >= 3 && pres[i] != null && pres[i - 3] != null) trend = +(pres[i] - pres[i - 3]).toFixed(2);
+    return { wind: c.wind_speed_10m ?? null, gust: c.wind_gusts_10m ?? null, windDir: c.wind_direction_10m ?? null,
+      pressure: c.surface_pressure ?? null, trend, cloud: c.cloud_cover ?? null };
+  });
 }
 
 // ---- map ----
@@ -179,14 +187,15 @@ async function load() {
   statusEl.textContent = "Loading live sea conditionsâ€¦";
   spotLayer.clearLayers(); sightLayer.clearLayers(); hotspotLayer.clearLayers(); rankingEl.innerHTML = "";
 
-  let home, db, sightRaw;
+  let home, db, sightRaw, hsData;
   try {
-    [home, db, sightRaw] = await Promise.all([
+    [home, db, sightRaw, hsData] = await Promise.all([
       fetch("data/home.json").then((r) => r.json()),
       fetch("data/spots.json").then((r) => r.json()),
       fetch("data/sightings.json").then((r) => r.json()).catch(() => ({ sightings: [] })),
+      fetch("data/hotspots.json").then((r) => r.json()).catch(() => ({ hotspots: [] })),
     ]);
-  } catch (e) { statusEl.textContent = "Could not load data/*.json â€” serve the repo root (see README)."; return; }
+  } catch (e) { statusEl.textContent = "Could not load data â€” try again."; return; }
 
   const spots = db.spots;
   const sightings = (sightRaw.sightings || []).filter((s) => !s.example)
@@ -201,9 +210,14 @@ async function load() {
       color: "#7fc8e8", weight: 1, fill: false, dashArray: "5,6" }).addTo(map);
   }
 
+  // Hotspots render INSTANTLY from local data, so the map is alive before the
+  // (now batched) live conditions arrive.
+  renderHotspots(hsData);
+  statusEl.textContent = "Loading live conditionsâ€¦";
+
   const [marine, weather] = await Promise.all([
-    Promise.all(spots.map((s) => fetchMarine(s.lat, s.lon).catch(() => ({})))),
-    Promise.all(spots.map((s) => fetchWeather(s.lat, s.lon).catch(() => ({})))),
+    fetchMarineAll(spots).catch(() => spots.map(() => ({}))),
+    fetchWeatherAll(spots).catch(() => spots.map(() => ({}))),
   ]);
   const fronts = frontScores(marine.map((m) => m.sst ?? null));
   const nowMs = Date.now();
@@ -271,30 +285,30 @@ async function load() {
         `<a href="${eo}" target="_blank" rel="noopener">Sentinel-2 image</a>`);
   });
 
-  // bait-likelihood hotspots = where birds / frenzies are most likely (data/hotspots.json)
-  try {
-    const hs = await fetch("data/hotspots.json").then((r) => r.json());
-    (hs.hotspots || []).forEach((h, i) => {
-      const eo = `https://apps.sentinel-hub.com/eo-browser/?zoom=14&lat=${h.lat}&lng=${h.lon}`;
-      const gmap = `https://www.google.com/maps?q=${h.lat},${h.lon}`;
-      L.marker([h.lat, h.lon], { icon: L.divIcon({ className: "hot-icon",
-        html: '<span style="font-size:22px;filter:drop-shadow(0 0 3px #ff8c00)">&#127919;</span>', iconSize: [24, 24] }) })
-        .addTo(hotspotLayer).bindPopup(
-          `<b>ðŸŽ¯ Bait hotspot #${i + 1}</b><br>` +
-          `<div style="font-size:18px;font-weight:700;color:#7fe0a8;margin:5px 0">${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</div>` +
-          (h.depth_m != null ? `<b>${h.depth_m} m deep water</b> &middot; ` : "") +
-          `${h.dist_nm} nm ${h.heading} from Dbayeh<br>` +
-          `<small>${h.why} &middot; score ${h.score}</small><br>` +
-          `<small style="color:#7fc8e8">ðŸ“¡ satellite: ${hs.sst_source || "SST"}` +
-          `${hs.chl_source ? "; " + hs.chl_source : ""}</small><br>` +
-          `<a href="${gmap}" target="_blank" rel="noopener">â–¶ Navigate (Maps)</a> &middot; ` +
-          `<a href="${eo}" target="_blank" rel="noopener">ðŸ“· satellite photo</a>`);
-    });
-    if (hs.sst_source) statusEl.title = `hotspots: ${hs.sst_source}; ${hs.chl_source}`;
-  } catch (e) { /* no hotspots file yet */ }
+  const localT = new Date(nowMs + offset * 1000).toISOString().slice(11, 16);
+  statusEl.textContent = `ðŸŸ¢ Live Â· conditions ${localT} Beirut Â· ` +
+    `${rows.filter((r) => r.inRange).length} spots in range` +
+    (hsData.generated_utc_date ? ` Â· hotspots ${hsData.generated_utc_date}` : "");
+}
 
-  statusEl.textContent = `As of ${new Date(nowMs).toISOString().slice(0, 16).replace("T", " ")}Z Â· ` +
-    `${rows.filter((r) => r.inRange).length} spots in range`;
+// Hotspots come from data/hotspots.json (updated daily by the cloud job).
+function renderHotspots(hs) {
+  (hs.hotspots || []).forEach((h, i) => {
+    const eo = `https://apps.sentinel-hub.com/eo-browser/?zoom=14&lat=${h.lat}&lng=${h.lon}`;
+    const gmap = `https://www.google.com/maps?q=${h.lat},${h.lon}`;
+    L.marker([h.lat, h.lon], { icon: L.divIcon({ className: "hot-icon",
+      html: '<span style="font-size:22px;filter:drop-shadow(0 0 3px #ff8c00)">&#127919;</span>', iconSize: [24, 24] }) })
+      .addTo(hotspotLayer).bindPopup(
+        `<b>ðŸŽ¯ Bait hotspot #${i + 1}</b><br>` +
+        `<div style="font-size:18px;font-weight:700;color:#7fe0a8;margin:5px 0">${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</div>` +
+        (h.depth_m != null ? `<b>${h.depth_m} m deep water</b> &middot; ` : "") +
+        `${h.dist_nm} nm ${h.heading} from Dbayeh<br>` +
+        `<small>${h.why} &middot; score ${h.score}</small><br>` +
+        `<small style="color:#7fc8e8">ðŸ“¡ satellite: ${hs.sst_source || "SST"}` +
+        `${hs.chl_source ? "; " + hs.chl_source : ""}</small><br>` +
+        `<a href="${gmap}" target="_blank" rel="noopener">â–¶ Navigate (Maps)</a> &middot; ` +
+        `<a href="${eo}" target="_blank" rel="noopener">ðŸ“· satellite photo</a>`);
+  });
 }
 
 function renderVerdict(rows, moon, home) {
