@@ -280,14 +280,15 @@ async function load() {
       L.marker([h.lat, h.lon], { icon: L.divIcon({ className: "hot-icon",
         html: '<span style="font-size:22px;filter:drop-shadow(0 0 3px #ff8c00)">&#127919;</span>', iconSize: [24, 24] }) })
         .addTo(hotspotLayer).bindPopup(
-          `<b>Bait hotspot #${i + 1}</b> &middot; likely birds / frenzy<br>` +
-          `${h.dist_nm} nm ${h.heading} &middot; score ${h.score}<br>` +
-          `<small>${h.why}</small><br>` +
-          `<small style="color:#7fc8e8">ðŸ“¡ measured by satellite â€” ${hs.sst_source || "SST"}` +
+          `<b>ðŸŽ¯ Bait hotspot #${i + 1}</b><br>` +
+          `<div style="font-size:18px;font-weight:700;color:#7fe0a8;margin:5px 0">${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</div>` +
+          (h.depth_m != null ? `<b>${h.depth_m} m deep water</b> &middot; ` : "") +
+          `${h.dist_nm} nm ${h.heading} from Dbayeh<br>` +
+          `<small>${h.why} &middot; score ${h.score}</small><br>` +
+          `<small style="color:#7fc8e8">ðŸ“¡ satellite: ${hs.sst_source || "SST"}` +
           `${hs.chl_source ? "; " + hs.chl_source : ""}</small><br>` +
-          `<b>${h.lat.toFixed(4)}, ${h.lon.toFixed(4)}</b><br>` +
-          `<a href="${gmap}" target="_blank" rel="noopener">Maps</a> &middot; ` +
-          `<a href="${eo}" target="_blank" rel="noopener">ðŸ“· real satellite photo of this spot</a>`);
+          `<a href="${gmap}" target="_blank" rel="noopener">â–¶ Navigate (Maps)</a> &middot; ` +
+          `<a href="${eo}" target="_blank" rel="noopener">ðŸ“· satellite photo</a>`);
     });
     if (hs.sst_source) statusEl.title = `hotspots: ${hs.sst_source}; ${hs.chl_source}`;
   } catch (e) { /* no hotspots file yet */ }
