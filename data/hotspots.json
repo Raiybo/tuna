@@ -1,13 +1,39 @@
 {
- "generated_utc_date": "2026-11-14",
- "sst_source": "NOAA CoralTemp 5km 2026-11-14",
- "chl_source": "NOAA VIIRS 2026-11-05",
+ "generated_utc_date": "2026-11-15",
+ "sst_source": "NOAA CoralTemp 5km 2026-11-15",
+ "chl_source": "NOAA VIIRS 2026-10-08",
  "note": "Bait-likelihood prediction (SST break x chlorophyll x current). Where birds/frenzies are most likely - NOT a fish detector. Confirm the bust on-site.",
  "hotspots": [
   {
    "lat": 33.925,
+   "lon": 35.525,
+   "score": 0.737,
+   "sst_c": 23.9,
+   "depth_m": 123,
+   "sst_break_c": 0.05,
+   "chl": 0.56,
+   "current_kmh": 0.6,
+   "dist_nm": 3.3,
+   "heading": "W",
+   "why": "SST break 0.05C, chl 0.56, current 0.6 km/h"
+  },
+  {
+   "lat": 33.975,
+   "lon": 35.525,
+   "score": 0.71,
+   "sst_c": 23.9,
+   "depth_m": 756,
+   "sst_break_c": 0.05,
+   "chl": 0.19,
+   "current_kmh": 0.6,
+   "dist_nm": 4.0,
+   "heading": "NW",
+   "why": "SST break 0.05C, chl 0.19, current 0.6 km/h"
+  },
+  {
+   "lat": 33.925,
    "lon": 35.475,
-   "score": 0.709,
+   "score": 0.681,
    "sst_c": 24.0,
    "depth_m": 288,
    "sst_break_c": 0.04,
@@ -19,68 +45,42 @@
   },
   {
    "lat": 33.975,
-   "lon": 35.525,
-   "score": 0.694,
-   "sst_c": 23.9,
-   "depth_m": 756,
-   "sst_break_c": 0.05,
-   "chl": 0.17,
-   "current_kmh": 0.5,
-   "dist_nm": 4.0,
-   "heading": "NW",
-   "why": "SST break 0.05C, chl 0.17, current 0.5 km/h"
-  },
-  {
-   "lat": 33.925,
-   "lon": 35.525,
-   "score": 0.691,
-   "sst_c": 23.9,
-   "depth_m": 123,
-   "sst_break_c": 0.04,
-   "chl": 0.35,
-   "current_kmh": 0.5,
-   "dist_nm": 3.3,
-   "heading": "W",
-   "why": "SST break 0.04C, chl 0.35, current 0.5 km/h"
-  },
-  {
-   "lat": 33.975,
    "lon": 35.575,
-   "score": 0.691,
+   "score": 0.673,
    "sst_c": 23.8,
    "depth_m": 87,
    "sst_break_c": 0.04,
-   "chl": 0.1,
-   "current_kmh": 0.5,
+   "chl": 0.19,
+   "current_kmh": 0.6,
    "dist_nm": 2.5,
    "heading": "NNW",
-   "why": "SST break 0.04C, chl 0.10, current 0.5 km/h"
-  },
-  {
-   "lat": 34.125,
-   "lon": 35.525,
-   "score": 0.685,
-   "sst_c": 23.9,
-   "depth_m": 1344,
-   "sst_break_c": 0.04,
-   "chl": 0.23,
-   "current_kmh": 0.9,
-   "dist_nm": 11.8,
-   "heading": "NNW",
-   "why": "SST break 0.04C, chl 0.23, current 0.9 km/h"
+   "why": "SST break 0.04C, chl 0.19, current 0.6 km/h"
   },
   {
    "lat": 33.925,
    "lon": 35.425,
-   "score": 0.681,
+   "score": 0.64,
    "sst_c": 24.0,
    "depth_m": 941,
-   "sst_break_c": 0.05,
-   "chl": 0.12,
+   "sst_break_c": 0.04,
+   "chl": 0.17,
    "current_kmh": 0.7,
    "dist_nm": 8.2,
    "heading": "W",
-   "why": "SST break 0.05C, chl 0.12, current 0.7 km/h"
+   "why": "SST break 0.04C, chl 0.17, current 0.7 km/h"
+  },
+  {
+   "lat": 34.025,
+   "lon": 35.525,
+   "score": 0.622,
+   "sst_c": 23.8,
+   "depth_m": 1221,
+   "sst_break_c": 0.04,
+   "chl": 0.25,
+   "current_kmh": 0.6,
+   "dist_nm": 6.3,
+   "heading": "NNW",
+   "why": "SST break 0.04C, chl 0.25, current 0.6 km/h"
   }
  ]
 }
